@@ -10,32 +10,33 @@ class ExampleApp(QtGui.QMainWindow, For_Reel_v1_ui.Ui_MainWindow):
   def __init__(self, parent=None):
     super(ExampleApp, self).__init__(parent)
     self.setupUi(self)
+    #~ Let's get the global stuff that we will need set up.
+    self.driveMotorSpeed=Value('i', 30)
+    self.DriveMotorSpeedDisplay.display(self.driveMotorSpeed.value)
+    self.driveMotorSpeedMultiplier=Value('d', 0.25)
+    self.MultiplierDisplay.display(self.driveMotorSpeedMultiplier.value)
+    
     self.DriveMotorSlider.valueChanged.connect(self.changeDriveSpeedLCD)
-    self.MultiplierUp.clicked.connect(self.MultiplierUp)
-    self.MultiplierDown.clicked.connect(self.MultiplierDown)
-
-  #~ This will detect a change in the drive motor speed slider and change the 
-  #~ proper things for that.
+    self.MultiplierUp.clicked.connect(self.MultiplierUpfun)
+    self.MultiplierDown.clicked.connect(self.MultiplierDownfun)
+    
+  #Change the motor speed
   def changeDriveSpeedLCD(self, i):
-    #~ driveMotorSpeed.value=self.DriveMotorSlider.value()
-    self.DriveMotorSpeedDisplay.display(self.DriveMotorSlider.value())
-  
-  def MultiplierUp(self, i):
-    self.MutiplierDisplay.display(CurrentMultiplier.value)
-    
-    
-    
-    
-  def MultiplierDown(self, i):
-    
-  
+    self.driveMotorSpeed.value=self.DriveMotorSlider.value()
+    self.DriveMotorSpeedDisplay.display(self.driveMotorSpeed.value)
+	#Multiplier (step skip factor)
+  def MultiplierUpfun(self, i):
+		self.driveMotorSpeedMultiplier.value=self.driveMotorSpeedMultiplier.value*2
+		self.MultiplierDisplay.display(self.driveMotorSpeedMultiplier.value)
+  def MultiplierDownfun(self, i):
+		self.driveMotorSpeedMultiplier.value=self.driveMotorSpeedMultiplier.value/2
+		self.MultiplierDisplay.display(self.driveMotorSpeedMultiplier.value)
+
 
 def main():
   app = QtGui.QApplication(sys.argv)
   form = ExampleApp()
-  #~ Let's get the global stuff that we will need set up.
-  driveMotorSpeed=Value('i', 0)
-  driveMotorSpeedMultiplier('i', 0.25)
+
   form.show()
   app.exec_()
 
