@@ -33,6 +33,9 @@ class ExampleApp(QtGui.QMainWindow, For_Reel_v1_ui.Ui_MainWindow):
 		#set the multiplier initial, disp
 		self.driveMotorSpeedMultiplier=Value('d', 0.25)
 		self.MultiplierDisplay.display(self.driveMotorSpeedMultiplier.value)
+		#set the treatment timer disp,dial
+		self.TxtTime=Value('i', 0)
+		self.TxtTimeDisplay.display(self.TxtTime.value)
     
 		###Reactions to GUI things
     
@@ -47,39 +50,57 @@ class ExampleApp(QtGui.QMainWindow, For_Reel_v1_ui.Ui_MainWindow):
 		self.ManForth.pressed.connect(self.driveMotorForward_GO)
 		self.ManForth.released.connect(self.driveMotorForward_STOP)
 		#press and release back
-		#self.ManBack
+		self.ManBack.pressed.connect(self.driveMotorBack_GO)
+		self.ManBack.released.connect(self.driveMotorBack_STOP)
+		#change the tapetreatment timer dial
+		self.TxtTimeDial.valueChanged.connect(self.changeTxtTimer)
 		
-		#Change reel to reel mode speed
-		##### !!!!! This needs to be changed around because right now it
-		##### supposes that the amount of tape on the reels is eternally equal.
+	#Change reel to reel mode speed
+	##### !!!!! This needs to be changed around because right now it
+	##### supposes that the amount of tape on the reels is eternally equal.
+	
+	#Change R2R speed
 	def changeR2RSpeedLCD(self, i):
 		self.R2RMotorSpeed.value=self.R2RMotorSpeeds.value()
 		self.R2RMotorSpeedDisplay.display(self.R2RMotorSpeed.value)
-	#Change the motor speed
+	
+	#Change the drive motor speed
 	def changeDriveSpeedLCD(self, i):
 		self.driveMotorSpeed.value=self.DriveMotorSlider.value()
 		self.DriveMotorSpeedDisplay.display(self.driveMotorSpeed.value)
-		#Multiplier (step skip factor)
+	
+	#Multiplier (step skip factor)
 	def MultiplierUpfun(self, i):
 		self.driveMotorSpeedMultiplier.value=self.driveMotorSpeedMultiplier.value*2
 		self.MultiplierDisplay.display(self.driveMotorSpeedMultiplier.value)
 	def MultiplierDownfun(self, i):
 		self.driveMotorSpeedMultiplier.value=self.driveMotorSpeedMultiplier.value/2
 		self.MultiplierDisplay.display(self.driveMotorSpeedMultiplier.value)
-		#drive motor manual forward button
+	
+	#drive motor manual buttons first tab
 	def driveMotorForward_GO(self):
 		print("motor forward at "+str(self.driveMotorSpeed.value)+"!!!!!!!")
 	def driveMotorForward_STOP(self):
 		print("motor forward STOPPPPPP!!!!")
-		
-	#drive motor manual backwards button
+	def driveMotorBack_GO(self):
+		print("motor backward at "+str(self.driveMotorSpeed.value)+"!!!!!!!")
+	def driveMotorBack_STOP(self):
+		print("motor backward STOPPPPPP!!!!")
 	def driveMotorForward_GO(self):
 		print("motor back at "+str(self.driveMotorSpeed.value)+"!!!!!!!")
 	def driveMotorForward_STOP(self):
 		print("motor back STOPPPPPP!!!!")
+	
+	#treatment timer dial movement
+	def changeTxtTimer(self):
+		if self.TxtTimeDialSeconds.isChecked():
+			print("seconds")
+			
 		
+	
+	
 		
-		
+#BoilerPlate		
 def main():
 	app = QtGui.QApplication(sys.argv)
 	form = ExampleApp()
