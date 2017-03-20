@@ -30,19 +30,27 @@ class ExampleApp(QtGui.QMainWindow, For_Reel_v1_ui.Ui_MainWindow):
 		self.R2RMotorSpeed=Value('i',30)
 		self.R2RMotorSpeedDisplay.display(self.R2RMotorSpeed.value)
 		self.R2RMotorSpeeds.setValue(30)
+		#set the R2R timer slider,disp,init
+		self.R2RTime=Value('i',60)
+		self.R2RTimerDisplay.display(self.R2RTime.value)
+		self.R2RTimerSlider.setValue(60)
 		#set the multiplier initial, disp
 		self.driveMotorSpeedMultiplier=Value('d', 0.25)
 		self.MultiplierDisplay.display(self.driveMotorSpeedMultiplier.value)
 		#set the treatment timer disp,dial
 		self.TxtTime=Value('i', 0)
-		self.TxtTimeDisplay.display(self.TxtTime.value)
-    
+		self.TxtTimeDisplay.display("00:00")
+		self.TxtTimeDialMinutes.setChecked(True)
+		
+		
 		###Reactions to GUI things
-    
+		
 		#change reel slider
 		self.R2RMotorSpeeds.valueChanged.connect(self.changeR2RSpeedLCD)
 		#change drive speed slider
 		self.DriveMotorSlider.valueChanged.connect(self.changeDriveSpeedLCD)
+		#change R2R timer slider
+		self.R2RTimerSlider.valueChanged.connect(self.changeR2RTimer)
 		#click multiplier buttons
 		self.MultiplierUp.clicked.connect(self.MultiplierUpfun)
 		self.MultiplierDown.clicked.connect(self.MultiplierDownfun)
@@ -53,7 +61,8 @@ class ExampleApp(QtGui.QMainWindow, For_Reel_v1_ui.Ui_MainWindow):
 		self.ManBack.pressed.connect(self.driveMotorBack_GO)
 		self.ManBack.released.connect(self.driveMotorBack_STOP)
 		#change the tapetreatment timer dial
-		self.TxtTimeDial.valueChanged.connect(self.changeTxtTimer)
+		self.TimerUpButton.clicked.connect(self.timeUp)
+		self.TimerDownButton.clicked.connect(self.timeDown)
 		
 	#Change reel to reel mode speed
 	##### !!!!! This needs to be changed around because right now it
@@ -77,6 +86,11 @@ class ExampleApp(QtGui.QMainWindow, For_Reel_v1_ui.Ui_MainWindow):
 		self.driveMotorSpeedMultiplier.value=self.driveMotorSpeedMultiplier.value/2
 		self.MultiplierDisplay.display(self.driveMotorSpeedMultiplier.value)
 	
+	#R2R timer slider
+	def changeR2RTimer(self, i):
+		self.R2RTime.value=self.R2RTimerSlider.value()
+		self.R2RTimerDisplay.display(self.R2RTime.value)
+	
 	#drive motor manual buttons first tab
 	def driveMotorForward_GO(self):
 		print("motor forward at "+str(self.driveMotorSpeed.value)+"!!!!!!!")
@@ -92,14 +106,21 @@ class ExampleApp(QtGui.QMainWindow, For_Reel_v1_ui.Ui_MainWindow):
 		print("motor back STOPPPPPP!!!!")
 	
 	#treatment timer dial movement
-	def changeTxtTimer(self):
+	def timeUp(self):
 		if self.TxtTimeDialSeconds.isChecked():
-			print("seconds")
-			
-		
-	
-	
-		
+			self.TxtTime.value=self.TxtTime.value+1
+		elif self.TxtTimeDialMinutes.isChecked():
+			self.TxtTime.value=self.TxtTime.value+60
+		dispmin,dispsec=divmod(self.TxtTime.value,60)
+		self.TxtTimeDisplay.display(str(dispmin)+":"+str(dispsec))
+	def timeDown(self):
+		if self.TxtTimeDialSeconds.isChecked():
+			self.TxtTime.value=self.TxtTime.value-1
+		elif self.TxtTimeDialMinutes.isChecked():
+			self.TxtTime.value=self.TxtTime.value-60
+		dispmin,dispsec=divmod(self.TxtTime.value,60)
+		self.TxtTimeDisplay.display(str(dispmin)+":"+str(dispsec))
+				
 #BoilerPlate		
 def main():
 	app = QtGui.QApplication(sys.argv)

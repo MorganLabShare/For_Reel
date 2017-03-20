@@ -24,7 +24,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -331,23 +331,13 @@
           </rect>
          </property>
         </widget>
-        <widget class="QDial" name="TxtTimeDial">
-         <property name="geometry">
-          <rect>
-           <x>160</x>
-           <y>70</y>
-           <width>191</width>
-           <height>191</height>
-          </rect>
-         </property>
-        </widget>
         <widget class="QFrame" name="frame_14">
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>90</y>
+           <y>70</y>
            <width>151</width>
-           <height>181</height>
+           <height>101</height>
           </rect>
          </property>
          <property name="frameShape">
@@ -360,7 +350,7 @@
           <property name="geometry">
            <rect>
             <x>10</x>
-            <y>60</y>
+            <y>40</y>
             <width>118</width>
             <height>26</height>
            </rect>
@@ -373,7 +363,7 @@
           <property name="geometry">
            <rect>
             <x>10</x>
-            <y>90</y>
+            <y>70</y>
             <width>118</width>
             <height>26</height>
            </rect>
@@ -395,6 +385,52 @@
            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Dial Control&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
          </widget>
+        </widget>
+        <widget class="QPushButton" name="TimerUpButton">
+         <property name="geometry">
+          <rect>
+           <x>180</x>
+           <y>70</y>
+           <width>171</width>
+           <height>71</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>UP</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="TimerDownButton">
+         <property name="geometry">
+          <rect>
+           <x>180</x>
+           <y>170</y>
+           <width>171</width>
+           <height>71</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>DOWN</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="TxtGoButton">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>180</y>
+           <width>151</width>
+           <height>81</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+           <underline>true</underline>
+          </font>
+         </property>
+         <property name="text">
+          <string>TAPE TREAT GO!</string>
+         </property>
         </widget>
        </widget>
       </widget>
