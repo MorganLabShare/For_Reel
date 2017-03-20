@@ -12,6 +12,7 @@ from PyQt4 import QtGui
 import sys
 import For_Reel_v1_ui
 import os
+from time import sleep
 
 
 class ExampleApp(QtGui.QMainWindow, For_Reel_v1_ui.Ui_MainWindow):
@@ -63,6 +64,8 @@ class ExampleApp(QtGui.QMainWindow, For_Reel_v1_ui.Ui_MainWindow):
 		#change the tapetreatment timer dial
 		self.TimerUpButton.clicked.connect(self.timeUp)
 		self.TimerDownButton.clicked.connect(self.timeDown)
+		#start the treatment
+		self.TxtGoButton.clicked.connect(self.txtGo)
 		
 	#Change reel to reel mode speed
 	##### !!!!! This needs to be changed around because right now it
@@ -120,11 +123,52 @@ class ExampleApp(QtGui.QMainWindow, For_Reel_v1_ui.Ui_MainWindow):
 			self.TxtTime.value=self.TxtTime.value-60
 		dispmin,dispsec=divmod(self.TxtTime.value,60)
 		self.TxtTimeDisplay.display(str(dispmin)+":"+str(dispsec))
-				
+	#Do the actual treatment
+	def txtGo(self):
+		print("starting treatment")
+		print("motor speed: "+str(self.driveMotorSpeed.value))
+		print("time (sec): "+str(self.TxtTime.value))
+		print("starting motor")
+		txtProcActual=Process(target=self.txtProc, \
+			args=(self.driveMotorSpeed.value,self.driveMotorSpeedMultiplier.value))
+		txtProcActual.start()
+		
+		#### Need to abstract by one step. Set up a function for starting a
+		# timer process which will start the motor process.
+		# The timer process launch the countdown and the motor process.
+		# If the timer runs out, the process will die.
+		# Also, need to make a kill button to stop the process.
+		#   - That will stop motors and kill process.
+		
+		sleep(self.TxtTime.value+1)
+		if txtProcActual.is_alive():
+			txtProcActual.terminate()
+			print("killing all motors")
+			self.TxtTime.value=0
+			dispmin,dispsec=divmod(self.TxtTime.value,60)
+			self.TxtTimeDisplay.display(str(dispmin)+":"+str(dispsec))
+		
+	#the processing thread for treatment
+	def txtProc(self,speed,mult):
+		#global testval
+		print("speed: "+str(speed))
+		print("mult: "+str(mult))
+		time=self.TxtTime
+		while time.value >= 0:
+			sleep(1)
+			print(time.value)
+			self.TxtTime.value=self.TxtTime.value-1
+			dispmin,dispsec=divmod(self.TxtTime.value,60)
+			self.TxtTimeDisplay.display(str(dispmin)+":"+str(dispsec))
+
+
+
 #BoilerPlate		
 def main():
 	app = QtGui.QApplication(sys.argv)
 	form = ExampleApp()
+
+	testval=Value('i',10)
 
 	form.show()
 	app.exec_()
