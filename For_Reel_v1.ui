@@ -337,7 +337,7 @@
            <x>10</x>
            <y>70</y>
            <width>151</width>
-           <height>101</height>
+           <height>111</height>
           </rect>
          </property>
          <property name="frameShape">
@@ -392,7 +392,7 @@
            <x>180</x>
            <y>70</y>
            <width>171</width>
-           <height>71</height>
+           <height>51</height>
           </rect>
          </property>
          <property name="text">
@@ -403,9 +403,9 @@
          <property name="geometry">
           <rect>
            <x>180</x>
-           <y>170</y>
+           <y>130</y>
            <width>171</width>
-           <height>71</height>
+           <height>51</height>
           </rect>
          </property>
          <property name="text">
@@ -416,9 +416,9 @@
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>180</y>
+           <y>190</y>
            <width>151</width>
-           <height>81</height>
+           <height>71</height>
           </rect>
          </property>
          <property name="font">
@@ -430,6 +430,26 @@
          </property>
          <property name="text">
           <string>TAPE TREAT GO!</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="TxtStopButton">
+         <property name="geometry">
+          <rect>
+           <x>180</x>
+           <y>190</y>
+           <width>171</width>
+           <height>71</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+           <underline>true</underline>
+          </font>
+         </property>
+         <property name="text">
+          <string>STOP! STOP! STOP!</string>
          </property>
         </widget>
        </widget>

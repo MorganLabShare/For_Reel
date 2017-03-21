@@ -2,8 +2,7 @@
 
 # Form implementation generated from reading ui file 'For_Reel_v1.ui'
 #
-# Created: Mon Mar 20 19:38:34 2017
-#      by: PyQt4 UI code generator 4.11.2
+# Created by: PyQt4 UI code generator 4.11.4
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -129,7 +128,7 @@ class Ui_MainWindow(object):
         self.TxtTimeDisplay.setGeometry(QtCore.QRect(180, 10, 161, 51))
         self.TxtTimeDisplay.setObjectName(_fromUtf8("TxtTimeDisplay"))
         self.frame_14 = QtGui.QFrame(self.frame_13)
-        self.frame_14.setGeometry(QtCore.QRect(10, 70, 151, 101))
+        self.frame_14.setGeometry(QtCore.QRect(10, 70, 151, 111))
         self.frame_14.setFrameShape(QtGui.QFrame.StyledPanel)
         self.frame_14.setFrameShadow(QtGui.QFrame.Raised)
         self.frame_14.setObjectName(_fromUtf8("frame_14"))
@@ -143,19 +142,27 @@ class Ui_MainWindow(object):
         self.label_11.setGeometry(QtCore.QRect(16, 10, 121, 31))
         self.label_11.setObjectName(_fromUtf8("label_11"))
         self.TimerUpButton = QtGui.QPushButton(self.frame_13)
-        self.TimerUpButton.setGeometry(QtCore.QRect(180, 70, 171, 71))
+        self.TimerUpButton.setGeometry(QtCore.QRect(180, 70, 171, 51))
         self.TimerUpButton.setObjectName(_fromUtf8("TimerUpButton"))
         self.TimerDownButton = QtGui.QPushButton(self.frame_13)
-        self.TimerDownButton.setGeometry(QtCore.QRect(180, 170, 171, 71))
+        self.TimerDownButton.setGeometry(QtCore.QRect(180, 130, 171, 51))
         self.TimerDownButton.setObjectName(_fromUtf8("TimerDownButton"))
         self.TxtGoButton = QtGui.QPushButton(self.frame_13)
-        self.TxtGoButton.setGeometry(QtCore.QRect(10, 180, 151, 81))
+        self.TxtGoButton.setGeometry(QtCore.QRect(10, 190, 151, 71))
         font = QtGui.QFont()
         font.setBold(True)
         font.setUnderline(True)
         font.setWeight(75)
         self.TxtGoButton.setFont(font)
         self.TxtGoButton.setObjectName(_fromUtf8("TxtGoButton"))
+        self.TxtStopButton = QtGui.QPushButton(self.frame_13)
+        self.TxtStopButton.setGeometry(QtCore.QRect(180, 190, 171, 71))
+        font = QtGui.QFont()
+        font.setBold(True)
+        font.setUnderline(True)
+        font.setWeight(75)
+        self.TxtStopButton.setFont(font)
+        self.TxtStopButton.setObjectName(_fromUtf8("TxtStopButton"))
         self.tabWidget.addTab(self.tab, _fromUtf8(""))
         self.tab_2 = QtGui.QWidget()
         self.tab_2.setObjectName(_fromUtf8("tab_2"))
@@ -279,6 +286,7 @@ class Ui_MainWindow(object):
         self.TimerUpButton.setText(_translate("MainWindow", "UP", None))
         self.TimerDownButton.setText(_translate("MainWindow", "DOWN", None))
         self.TxtGoButton.setText(_translate("MainWindow", "TAPE TREAT GO!", None))
+        self.TxtStopButton.setText(_translate("MainWindow", "STOP! STOP! STOP!", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "TAPE TREATMENT", None))
         self.label_5.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:14pt; font-weight:600; color:#ff0000;\">MAKE SURE BOTH SWITCHES ON THE BLACK BOX</span></p><p align=\"center\"><span style=\" font-size:14pt; font-weight:600; color:#ff0000;\">ARE IN THE LEFT POSITION!!!!</span></p></body></html>", None))
         self.label_6.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-weight:600;\">Left Motor Direction</span></p></body></html>", None))
