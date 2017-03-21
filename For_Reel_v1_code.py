@@ -123,13 +123,14 @@ class ExampleApp(QtGui.QMainWindow, For_Reel_v1_ui.Ui_MainWindow):
 			self.TxtTime.value=self.TxtTime.value-60
 		dispmin,dispsec=divmod(self.TxtTime.value,60)
 		self.TxtTimeDisplay.display(str(dispmin)+":"+str(dispsec))
+	
 	#Do the actual treatment
 	def txtGo(self):
 		print("starting treatment")
 		print("motor speed: "+str(self.driveMotorSpeed.value))
 		print("time (sec): "+str(self.TxtTime.value))
 		print("starting motor")
-		txtProcActual=Process(target=self.txtProc, \
+		txtProcActual=Process(target=txtProc, \
 			args=(self.driveMotorSpeed.value,self.driveMotorSpeedMultiplier.value))
 		txtProcActual.start()
 		
@@ -148,18 +149,16 @@ class ExampleApp(QtGui.QMainWindow, For_Reel_v1_ui.Ui_MainWindow):
 			dispmin,dispsec=divmod(self.TxtTime.value,60)
 			self.TxtTimeDisplay.display(str(dispmin)+":"+str(dispsec))
 		
-	#the processing thread for treatment
-	def txtProc(self,speed,mult):
-		#global testval
-		print("speed: "+str(speed))
-		print("mult: "+str(mult))
-		time=self.TxtTime
-		while time.value >= 0:
-			sleep(1)
-			print(time.value)
-			self.TxtTime.value=self.TxtTime.value-1
-			dispmin,dispsec=divmod(self.TxtTime.value,60)
-			self.TxtTimeDisplay.display(str(dispmin)+":"+str(dispsec))
+#the processing thread for treatment
+def txtProc(speed,mult):
+	print("speed: "+str(speed))
+	print("mult: "+str(mult))
+	while time.value >= 0:
+		sleep(1)
+		print(time.value)
+		self.TxtTime.value=self.TxtTime.value-1
+		dispmin,dispsec=divmod(self.TxtTime.value,60)
+		self.TxtTimeDisplay.display(str(dispmin)+":"+str(dispsec))
 
 
 
