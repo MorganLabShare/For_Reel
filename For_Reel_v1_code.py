@@ -13,6 +13,7 @@ import sys
 import For_Reel_v1_ui
 import os
 import time
+from Adafruit_MotorHAT import Adafruit_MotorHAT, Adafruit_DCMotor
 
 class ExampleApp(QtGui.QMainWindow, For_Reel_v1_ui.Ui_MainWindow):
     def __init__(self, parent=None):
@@ -71,6 +72,9 @@ class ExampleApp(QtGui.QMainWindow, For_Reel_v1_ui.Ui_MainWindow):
         self.TxtGoButton.clicked.connect(self.testGo)
         #emergency stop
         self.TxtStopButton.clicked.connect(self.testStop)
+        ### R2R section
+        self.LeftMotorCW.setChecked(True)
+        self.RightMotorCW.setChecked(True)
         #R2R stop and go buttons
         self.R2RGO.clicked.connect(self.r2rGo)
         self.R2RSTOP.clicked.connect(self.r2rStop)
@@ -102,17 +106,13 @@ class ExampleApp(QtGui.QMainWindow, For_Reel_v1_ui.Ui_MainWindow):
 
     #drive motor manual buttons first tab
     def driveMotorForward_GO(self):
-        moGo(self,self.driveMotorSpeed.value)
+        moGo(self,self.driveMotorSpeed.value,1,1)
     def driveMotorForward_STOP(self):
         moStop()
     def driveMotorBack_GO(self):
-        print("motor backward at "+str(self.driveMotorSpeed.value)+"!!!!!!!")
+        moGo(self,self.driveMotorSpeed.value,2,2)
     def driveMotorBack_STOP(self):
-        print("motor backward STOPPPPPP!!!!")
-    def driveMotorForward_GO(self):
-        print("motor back at "+str(self.driveMotorSpeed.value)+"!!!!!!!")
-    def driveMotorForward_STOP(self):
-        print("motor back STOPPPPPP!!!!")
+        moStop()
 
     #treatment timer dial movement
     def timeUp(self):
@@ -147,7 +147,7 @@ class ExampleApp(QtGui.QMainWindow, For_Reel_v1_ui.Ui_MainWindow):
 
     def testGo(self):
         self.stopEverything.value=0
-        moGo(self,self.driveMotorSpeed.value)
+        moGo(self,self.driveMotorSpeed.value,1,1)
         self.countDownDisplay(self.TxtTime.value,self.TxtTimeDisplay)
 
     def testStop(self):
@@ -158,6 +158,9 @@ class ExampleApp(QtGui.QMainWindow, For_Reel_v1_ui.Ui_MainWindow):
     #fill in these later with the direction parsing
     def r2rGo(self):
         self.stopEverything.value=0
+        if self.LeftMotorCW(isChecked):
+            print("CW")
+
         moGo(self,self.R2RMotorSpeed.value)
     def r2rStop(self):
         self.stopEverything.value=1
@@ -173,12 +176,41 @@ def moGo(self,speed,dir1,dir2):
     print("motors start")
     print("drive speed="+str(speed))
     print("multiplier="+str(self.driveMotorSpeedMultiplier.value))
+    if dir1 == "1":
+    	driveMotor.run(Adafruit_MotorHAT.FORWARD)
+    elif dir1 == "2":
+    	driveMotor.run(Adafruit_MotorHAT.BACKWARD)
+    driveMotor.setSpeed(speed)
+    slaveDriver(self,dir2)
 
 def moStop():
     print("motors stop")
+    turnOffMotors()
 
 def moGoR2R(self,speed,dir1,dir2):
+    print("still working on this")
     return 0
+
+
+def slaveDriver(self,dir2):
+    while 1
+
+
+#Low level switch setupUi
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(19, GPIO.IN, pull_up_down = GPIO.PUD_UP)
+GPIO.setup(16, GPIO.IN, pull_up_down = GPIO.PUD_UP)
+GPIO.setup(13, GPIO.IN, pull_up_down = GPIO.PUD_UP)
+# Low level motor setup
+mh = Adafruit_MotorHAT(addr=0x60)
+driveMotor=mh.getMotor(3)
+slaveMotor=mh.getMotor(4)
+
+# recommended for auto-disabling motors on shutdown!
+def turnOffMotors():
+    mh.getMotor(3).run(Adafruit_MotorHAT.RELEASE)
+    mh.getMotor(4).run(Adafruit_MotorHAT.RELEASE)
+
 
 #BoilerPlateQtGui.qApp.processEvents()QtGui.qApp.processEvents()
 def main():
