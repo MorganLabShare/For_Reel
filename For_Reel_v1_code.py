@@ -102,9 +102,9 @@ class ExampleApp(QtGui.QMainWindow, For_Reel_v1_ui.Ui_MainWindow):
 
     #drive motor manual buttons first tab
     def driveMotorForward_GO(self):
-        print("motor forward at "+str(self.driveMotorSpeed.value)+"!!!!!!!")
+        moGo(self,self.driveMotorSpeed.value)
     def driveMotorForward_STOP(self):
-        print("motor forward STOPPPPPP!!!!")
+        moStop()
     def driveMotorBack_GO(self):
         print("motor backward at "+str(self.driveMotorSpeed.value)+"!!!!!!!")
     def driveMotorBack_STOP(self):
@@ -120,140 +120,65 @@ class ExampleApp(QtGui.QMainWindow, For_Reel_v1_ui.Ui_MainWindow):
             self.TxtTime.value=self.TxtTime.value+1
         elif self.TxtTimeDialMinutes.isChecked():
             self.TxtTime.value=self.TxtTime.value+60
-        self.txtDisplayUpdate(self.TxtTime.value)
+        self.txtDisplayUpdate(self.TxtTime.value,self.TxtTimeDisplay)
     def timeDown(self):
         if self.TxtTimeDialSeconds.isChecked():
             self.TxtTime.value=self.TxtTime.value-1
         elif self.TxtTimeDialMinutes.isChecked():
             self.TxtTime.value=self.TxtTime.value-60
-        self.txtDisplayUpdate(self.TxtTime.value)
+        self.txtDisplayUpdate(self.TxtTime.value,self.TxtTimeDisplay)
 
-    #update the txt timer display
-    def txtDisplayUpdate(self,timer):
+    #update either display
+    def txtDisplayUpdate(self,timer,disp):
         dispmin,dispsec=divmod(timer,60)
-        self.TxtTimeDisplay.display(str(dispmin)+":"+str(dispsec))
+        disp.display(str(dispmin)+":"+str(dispsec))
 
-    def countDownDisplay(self,timer):
+    #update the LCD without breaking
+    def countDownDisplay(self,timer,disp):
         for i in range(timer):
             if self.stopEverything.value==1:
                 break
             timerd=timer-i
-            self.txtDisplayUpdate(timerd)
+            self.txtDisplayUpdate(timerd,disp)
             start = time.time()
             while time.time() - start < 1:
                 QtGui.qApp.processEvents()
                 time.sleep(0.02)
 
-    # def counterThread(self,timer):
-    #     print("starting counterThread")
-    #     # QtGui.qApp.processEvents()
-    #     while timer > 0:
-    #         # QtGui.qApp.processEvents()
-    #         if self.stopEverything.value==1:
-    #             print("breaking thread")
-    #             break
-    #         print(timer)
-    #
-    #     self.testStop()
-    #
-    # def signalResponse(self,input):
-    #     print("signal"+str(input))
-
     def testGo(self):
         self.stopEverything.value=0
-        moGo(self)
-        # QtGui.qApp.processEvents()
-        #ct = Process(target=self.counterThread, args=(self.TxtTime.value,))
-        #ct.start()
-        self.countDownDisplay(self.TxtTime.value)
-        #watch for the fucking signal
-        # upfd = UpdateFuckingDisplay()
-        # upfd.run(self.TxtTime.value)
-        # self.connect(upfd, upfd.signal, self.signalResponse)
-        print("testGo complete")
+        moGo(self,self.driveMotorSpeed.value)
+        self.countDownDisplay(self.TxtTime.value,self.TxtTimeDisplay)
 
     def testStop(self):
         self.stopEverything.value=1
         moStop()
-        self.txtDisplayUpdate(self.TxtTime.value)
+        self.txtDisplayUpdate(self.TxtTime.value,self.TxtTimeDisplay)
 
-
-
-
-    #Do the actual treatment
-    # def txtGo(self):
-    #     print("starting TLK")
-    #     timerProc=Process(target=self.timedLauncherKiller, \
-    #         args=(motorTreat,self.TxtTime.value,self.driveMotorSpeed.value,self.driveMotorSpeedMultiplier.value))
-    #     timerProc.start()
-    #
-    # #This will launch things, then wait and maybe kill them
-    # def timedLauncherKiller(self,proc,timer,speed,mult):
-    #     print("starting proc: "+str(proc))
-    #     QtGui.qApp.processEvents()
-    #     procLaunched=Process(target=proc, \
-    #         args=(self.TxtTime.value,self.driveMotorSpeed.value,self.driveMotorSpeedMultiplier.value))
-    #     print("launching motors")
-    #     procLaunched.start()
-    #     while timer+1 > 0:
-    #         if self.motorFullStop.value==1:
-    #             break
-    #         print(timer)
-    #         self.TxtTimeDisplay.display(timer)
-    #         timer -= 1
-    #         time.sleep(1)
-    #     print("TLK dead")
-    #testing the signalling of the threads
-
-
-    # def tickdown(self,time):
-    #     print("tickdown")
-    #     dispmin,dispsec=divmod(time,60)
-    #     self.TxtTimeDisplay.display(str(dispmin)+":"+str(dispsec))
-    #     #start a qthread to countdown on the screen
-    #     #consider using them to watch and kill the threads.
-    #
-    #     #self.TxtTimeDisplay.display(str(dispmin)+":"+str(dispsec))
-
-    #fill in these later
+    #fill in these later with the direction parsing
     def r2rGo(self):
-        return 0
+        self.stopEverything.value=0
+        moGo(self,self.R2RMotorSpeed.value)
     def r2rStop(self):
-        return 0
+        self.stopEverything.value=1
+        moStop()
     def r2rTimerGo(self):
-        return 0
+        self.stopEverything.value=0
+        moGo(self,self.R2RMotorSpeed.value)
+        self.countDownDisplay(self.R2RTime.value,self.R2RTimerDisplay)
 
-# def txtProc(speed,mult):
-#     print("speed: "+str(speed))
-#     print("mult: "+str(mult))
-#     #ime=TxtTime.value
-#     while TxtTime.value >= 0:
-#         time.sleep(1)
-#         self.TxtTime.value=self.TxtTime.value-1
-#         dispmin,dispsec=divmod(self.TxtTime.value,60)
-#         self.TxtTimeDisplay.display(str(dispmin)+":"+str(dispsec))
-#
-# def motorTreat(self,speed,mult):
-#     print("starting motors at "+str(speed)+" and mult of "+str(mult))
-#     i=0
-#     while i < 10:
-#         if motorFullStopGlobal.value == 1:
-#             break
-#         print("motors still going")
-#         i += 1
-#         time.sleep(1)
+# Think about whether or not we need to specify motor mode in the moGo call
 
-
-#Need to link this to the direction of each of the motors, which should be easy
-# They will only change for the R2R mode.
-def moGo(self):
+def moGo(self,speed,dir1,dir2):
     print("motors start")
+    print("drive speed="+str(speed))
+    print("multiplier="+str(self.driveMotorSpeedMultiplier.value))
 
 def moStop():
     print("motors stop")
 
-
-
+def moGoR2R(self,speed,dir1,dir2):
+    return 0
 
 #BoilerPlateQtGui.qApp.processEvents()QtGui.qApp.processEvents()
 def main():
