@@ -9,17 +9,54 @@
 
 from multiprocessing import Process, Value, Lock
 from PyQt4 import QtGui
+from PyQt4.QtCore import QThread, SIGNAL
 import sys
 import For_Reel_v1_ui
 import os
 from time import sleep
+
+class timeController(QThread):
+    def __init__(self):
+        QThread.__init__(self)
+    def go(self,time):
+        countdownthread=countDownTimer(time)
+        countdownthread.start()
+        countdownthread.go()
+    def die(self):
+        countdownthread.die()
+
+class countDownTimer(QThread):
+
+    def __init__(self,time):
+        QThread.__init__(self)
+        self.time=time
+        #self.signal=SIGNAL("timeLeft(int)")
+    #def __del__(self):
+    #    self.wait()
+    def go(self):
+        print("qthread running")
+        print(self.time)
+        while self.time > 0:
+            dispmin,dispsec=divmod(self.time,60)
+            #print(str(dispmin)+","+str(dispsec))
+            #self.dispname.display(str(dispmin)+":"+str(dispsec))
+            self.time = self.time-1
+            sleep(1)
+            print(self.time)
+            #self.emit(SIGNAL("timeLeft(int)"), self.time)
+        print("qthread finished")
+    def die(self):
+        self.quit()
+        self.wait()
+        self.terminate()
 
 class ExampleApp(QtGui.QMainWindow, For_Reel_v1_ui.Ui_MainWindow):
     def __init__(self, parent=None):
       #Initial self
         super(ExampleApp, self).__init__(parent)
         self.setupUi(self)
-
+        #test of the controller
+        self.controller=timeController()
         ###SET UP OF VARS AND DISPLAY
 
         #set the drive motor initial, disp, slider
@@ -67,6 +104,12 @@ class ExampleApp(QtGui.QMainWindow, For_Reel_v1_ui.Ui_MainWindow):
         self.TxtGoButton.clicked.connect(self.txtGo)
         #emergency stop
         self.TxtStopButton.clicked.connect(self.txtStop)
+        #R2R stop and go buttons
+        self.R2RGO.clicked.connect(self.r2rGo)
+        self.R2RSTOP.clicked.connect(self.r2rStop)
+        #R2R timer go
+        self.R2RTimerButton.clicked.connect(self.r2rTimerGo)
+
     #Change reel to reel mode speed
     ##### !!!!! This needs to be changed around because right now it
     ##### supposes that the amount of tape on the reels is eternally equal.
@@ -107,7 +150,7 @@ class ExampleApp(QtGui.QMainWindow, For_Reel_v1_ui.Ui_MainWindow):
     def driveMotorForward_STOP(self):
         print("motor back STOPPPPPP!!!!")
 
-#treatment timer dial movement
+    #treatment timer dial movement
     def timeUp(self):
         if self.TxtTimeDialSeconds.isChecked():
             self.TxtTime.value=self.TxtTime.value+1
@@ -125,37 +168,60 @@ class ExampleApp(QtGui.QMainWindow, For_Reel_v1_ui.Ui_MainWindow):
 
     #Do the actual treatment
     def txtGo(self):
-        print("starting treatment")
-        #self.proclist.append("test")
-        print("motor speed: "+str(self.driveMotorSpeed.value))
-        print("time (sec): "+str(self.TxtTime.value))
-        print("starting motor")
-        txtProcActual=Process(target=txtProc, \
-            args=(self.driveMotorSpeed.value,self.driveMotorSpeedMultiplier.value))
-        txtProcActual.start()
+        print("starting TLK")
+        timerProc=Process(target=self.timedLauncherKiller, \
+            args=(motorTreat,self.TxtTime.value,self.driveMotorSpeed.value,self.driveMotorSpeedMultiplier.value))
+        timerProc.start()
 
-        #### Need to abstract by one step. Set up a function for starting a
-        # timer process which will start the motor process.
-        # The timer process launch the countdown and the motor process.
-        # If the timer runs out, the process will die.
-        # Also, need to make a kill button to stop the process.
-        #   - That will stop motors and kill process.
+    #This will launch things, then wait and maybe kill them
+    def timedLauncherKiller(self,proc,time,speed,mult):
+        print("starting proc: "+str(proc))
+        QtGui.qApp.processEvents()
+        procLaunched=Process(target=proc, \
+            args=(self.TxtTime.value,self.driveMotorSpeed.value,self.driveMotorSpeedMultiplier.value))
+        procLaunched.start()
+        #countdownthread=countDownTimer(self.TxtTime.value)
+        #self.connect,self.
+        #countdownthread.start()
+        #self.connect(countdownthread, SIGNAL("timeLeft(int)"), self.tickdown)
+        self.controller.go(time)
+        while time+1 > 0:
+            print(self.controller.isRunning())
+            print(time)
+            time -= 1
+            sleep(1)
+    #testing the signalling of the threads
 
-        sleep(self.TxtTime.value+1)
-        if txtProcActual.is_alive():
-            txtProcActual.terminate()
-            print("killing all motors")
-            self.TxtTime.value=0
-            dispmin,dispsec=divmod(self.TxtTime.value,60)
-            self.TxtTimeDisplay.display(str(dispmin)+":"+str(dispsec))
+
+    def tickdown(self,time):
+        print("tickdown")
+        dispmin,dispsec=divmod(time,60)
+        self.TxtTimeDisplay.display(str(dispmin)+":"+str(dispsec))
+        #start a qthread to countdown on the screen
+        #consider using them to watch and kill the threads.
+
+        #self.TxtTimeDisplay.display(str(dispmin)+":"+str(dispsec))
+
+    #fill in these later
+    def r2rGo(self):
+        return 0
+    def r2rStop(self):
+        return 0
+    def r2rTimerGo(self):
+        return 0
 
     #stop all motors
     def txtStop(self):
         print("STOP ALL MOTORS")
-        for proc in self.proclist:
-            print("killing "+str(proc))
-            proc.terminate()
-            proc.join()
+        self.controller.die
+        #timerProc.terminate()
+        #timedLauncherKiller.terminate()
+        #countdownthread.terminate()
+        print(self.controller.isRunning)
+        #for proc in self.proclist:
+        #    print("killing "+str(proc))
+        #    proc.terminate()
+        #    proc.join()
 
 #the processing thread for treatment
 def txtProc(speed,mult):
@@ -167,6 +233,14 @@ def txtProc(speed,mult):
         self.TxtTime.value=self.TxtTime.value-1
         dispmin,dispsec=divmod(self.TxtTime.value,60)
         self.TxtTimeDisplay.display(str(dispmin)+":"+str(dispsec))
+
+def motorTreat(self,speed,mult):
+    print("starting motors at "+str(speed)+" and mult of "+str(mult))
+    i=0
+    while i < 10:
+        print("motors still going")
+        i += 1
+        sleep(1)
 
 #BoilerPlate
 def main():
