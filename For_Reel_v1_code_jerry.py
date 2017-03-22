@@ -1,4 +1,4 @@
-#!/bin/python
+#!/usr/bin/env python
 
 ###############
 #
@@ -14,6 +14,7 @@ import For_Reel_v1_ui
 import os
 import time
 from Adafruit_MotorHAT import Adafruit_MotorHAT, Adafruit_DCMotor
+import RPi.GPIO as GPIO
 
 class ExampleApp(QtGui.QMainWindow, For_Reel_v1_ui.Ui_MainWindow):
     def __init__(self, parent=None):
@@ -24,13 +25,13 @@ class ExampleApp(QtGui.QMainWindow, For_Reel_v1_ui.Ui_MainWindow):
         ###SET UP OF VARS AND DISPLAY
 
         #set the drive motor initial, disp, slider
-        self.driveMotorSpeed=Value('i', 30)
+        self.driveMotorSpeed=Value('i', 40)
         self.DriveMotorSpeedDisplay.display(self.driveMotorSpeed.value)
-        self.DriveMotorSlider.setValue(30)
+        self.DriveMotorSlider.setValue(40)
         #set the drive motor initial, disp, slider
-        self.R2RMotorSpeed=Value('i',30)
+        self.R2RMotorSpeed=Value('i',40)
         self.R2RMotorSpeedDisplay.display(self.R2RMotorSpeed.value)
-        self.R2RMotorSpeeds.setValue(30)
+        self.R2RMotorSpeeds.setValue(40)
         #set the R2R timer slider,disp,init
         self.R2RTime=Value('i',60)
         self.R2RTimerDisplay.display(self.R2RTime.value)
@@ -144,6 +145,7 @@ class ExampleApp(QtGui.QMainWindow, For_Reel_v1_ui.Ui_MainWindow):
             while time.time() - start < 1:
                 QtGui.qApp.processEvents()
                 time.sleep(0.02)
+	self.testStop()
 
     def testGo(self):
         self.stopEverything.value=0
@@ -176,12 +178,30 @@ def moGo(self,speed,dir1,dir2):
     print("motors start")
     print("drive speed="+str(speed))
     print("multiplier="+str(self.driveMotorSpeedMultiplier.value))
-    if dir1 == "1":
+    if dir1 == 1:
     	driveMotor.run(Adafruit_MotorHAT.FORWARD)
-    elif dir1 == "2":
-    	driveMotor.run(Adafruit_MotorHAT.BACKWARD)
+    elif dir1 == 2:
+    	driveMotor.run(Adafruit_MotorHAT.BACKWARD)   
     driveMotor.setSpeed(speed)
-    slaveDriver(self,dir2)
+    # Poor man's PWM
+    #~ driveTime=self.driveMotorSpeedMultiplier.value * 32
+    #~ pauseTime=32 - driveTime
+    #~ print(driveTime, pauseTime)
+    #~ while True: 
+		#~ if self.stopEverything.value == 1:
+			#~ break
+		#~ print("motorgo")
+		#~ driveMotor.setSpeed(speed)
+		#~ time.sleep(driveTime/100)
+		#~ print("motorstop")
+		#~ driveMotor.run(Adafruit_MotorHAT.RELEASE)
+		#~ start=time.time()
+		#~ while time.time() - start < (pauseTime / 50):
+			#~ print(time.time() - start)
+			#~ QtGui.qApp.processEvents()
+			#~ time.sleep(0.02)
+    
+    #~ slaveDriver(self,dir2)
 
 def moStop():
     print("motors stop")
@@ -192,8 +212,8 @@ def moGoR2R(self,speed,dir1,dir2):
     return 0
 
 
-def slaveDriver(self,dir2):
-    while 1
+#~ def slaveDriver(self,dir2):
+    #~ while 1
 
 
 #Low level switch setupUi
@@ -205,6 +225,7 @@ GPIO.setup(13, GPIO.IN, pull_up_down = GPIO.PUD_UP)
 mh = Adafruit_MotorHAT(addr=0x60)
 driveMotor=mh.getMotor(3)
 slaveMotor=mh.getMotor(4)
+print("motors initiated")
 
 # recommended for auto-disabling motors on shutdown!
 def turnOffMotors():
