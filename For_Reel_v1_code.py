@@ -145,9 +145,17 @@ class ExampleApp(QtGui.QMainWindow, For_Reel_v1_ui.Ui_MainWindow):
                 QtGui.qApp.processEvents()
                 time.sleep(0.02)
 
+    def moGoMult(self,speed,mult,dir1,dir2):
+        while True:
+            if self.stopEverything.value==1:
+                break
+
+
     def testGo(self):
         self.stopEverything.value=0
         moGo(self,self.driveMotorSpeed.value,1,1)
+        # Here is where to start the child process for motor control.
+
         self.countDownDisplay(self.TxtTime.value,self.TxtTimeDisplay)
 
     def testStop(self):
@@ -173,15 +181,38 @@ class ExampleApp(QtGui.QMainWindow, For_Reel_v1_ui.Ui_MainWindow):
 # Think about whether or not we need to specify motor mode in the moGo call
 
 def moGo(self,speed,dir1,dir2):
-    print("motors start")
-    print("drive speed="+str(speed))
-    print("multiplier="+str(self.driveMotorSpeedMultiplier.value))
+    #print("motors start")
+    #print("drive speed="+str(speed))
+    #print("multiplier="+str(self.driveMotorSpeedMultiplier.value))
     if dir1 == "1":
     	driveMotor.run(Adafruit_MotorHAT.FORWARD)
     elif dir1 == "2":
     	driveMotor.run(Adafruit_MotorHAT.BACKWARD)
     driveMotor.setSpeed(speed)
-    slaveDriver(self,dir2)
+    moGoMultOutside(self,speed,dir1,dir2)
+    #slaveDriver(self,dir2)
+
+def MoGoMultOutside(self,speed,dir1,dir2):
+    mult=self.driveMotorSpeedMultiplier.value
+    driveDelay=mult*32/10
+    waitDelay=(1-mult)*32/10
+    while True:
+        if self.stopEverything.value==1:
+            break
+        driveMotor.setSpeed(speed)
+        start = time.time()
+        while time.time() - start < driveDelay :
+            QtGui.qApp.processEvents()
+            time.sleep(0.01)
+        driveMotor.setSpeed(0)
+        while time.time() - start < waitDelay :
+            QtGui.qApp.processEvents()
+            time.sleep(0.01)
+
+def droMoStop():
+    print("Drive Motor Stop")
+    #driveMotor.setSpeed(0)
+    #driveMotor.run(Adafruit_MotorHAT.RELEASE)
 
 def moStop():
     print("motors stop")
