@@ -14,6 +14,7 @@ import For_Reel_v1_ui
 import os
 import time
 from Adafruit_MotorHAT import Adafruit_MotorHAT, Adafruit_DCMotor
+import RPi.GPIO as GPIO
 
 class ExampleApp(QtGui.QMainWindow, For_Reel_v1_ui.Ui_MainWindow):
     def __init__(self, parent=None):
@@ -189,10 +190,12 @@ def moGo(self,speed,dir1,dir2):
     elif dir1 == "2":
     	driveMotor.run(Adafruit_MotorHAT.BACKWARD)
     driveMotor.setSpeed(speed)
-    moGoMultOutside(self,speed,dir1,dir2)
+    moGoMultOutsideProc=Process(target=self.moGoMultOutside,args=(self,speed,dir1,dir2))
+    #moGoMultOutside(self,speed,dir1,dir2)
     #slaveDriver(self,dir2)
 
 def MoGoMultOutside(self,speed,dir1,dir2):
+    print("speed "+str(speed)+" dir "+str(dir1))
     mult=self.driveMotorSpeedMultiplier.value
     driveDelay=mult*32/10
     waitDelay=(1-mult)*32/10
@@ -224,8 +227,13 @@ def moGoR2R(self,speed,dir1,dir2):
 
 
 def slaveDriver(self,dir2):
-    while 1
+    print("slave motor start subprocess")
+    slaveProc=Process(target=slaveProcFun, args=(self,dir2))
+    slaveProc.start()
+    #while 1
 
+def slaveProcFun(self,dir2):
+	print("this is the slave process")
 
 #Low level switch setupUi
 GPIO.setmode(GPIO.BCM)
