@@ -107,12 +107,16 @@ class ExampleApp(QtGui.QMainWindow, For_Reel_v1_ui.Ui_MainWindow):
 
     #drive motor manual buttons first tab
     def driveMotorForward_GO(self):
-        moGo(self,self.driveMotorSpeed.value,1,1)
+        self.stopEverything.value=0
+        moGo(self,self.driveMotorSpeed.value,2,2)
     def driveMotorForward_STOP(self):
+        self.stopEverything.value=1
         moStop()
     def driveMotorBack_GO(self):
-        moGo(self,self.driveMotorSpeed.value,2,2)
+        self.stopEverything.value=0
+        moGo(self,self.driveMotorSpeed.value,1,1)
     def driveMotorBack_STOP(self):
+        self.stopEverything.value=1
         moStop()
 
     #treatment timer dial movement
@@ -154,7 +158,7 @@ class ExampleApp(QtGui.QMainWindow, For_Reel_v1_ui.Ui_MainWindow):
 
     def testGo(self):
         self.stopEverything.value=0
-        moGo(self,self.driveMotorSpeed.value,1,1)
+        moGo(self,self.driveMotorSpeed.value,2,2)
         # Here is where to start the child process for motor control.
 
         self.countDownDisplay(self.TxtTime.value,self.TxtTimeDisplay)
@@ -189,30 +193,42 @@ def moGo(self,speed,dir1,dir2):
     	driveMotor.run(Adafruit_MotorHAT.BACKWARD)
     elif dir1 == "2":
     	driveMotor.run(Adafruit_MotorHAT.FORWARD)
-    #~ driveMotor.setSpeed(speed)
+    print("starting motor diag")
+    driveMotor.setSpeed(speed)
     #~ moGoMultOutsideProc=Process(target=moGoMultOutside,args=(self,speed,dir1,dir2))
     moGoMultOutside(self,speed,dir1,dir2)
     #slaveDriver(self,dir2)
 
 def moGoMultOutside(self,speed,dir1,dir2):
-    print("speed "+str(speed)+" dir "+str(dir1))
-    mult=self.driveMotorSpeedMultiplier.value
-    driveDelay=mult*32/20
-    waitDelay=(1-mult)*32/20
-    while True:
-        if self.stopEverything.value==1:
-            break
-        driveMotor.setSpeed(speed)
-        start = time.time()
-        print(driveDelay, waitDelay)
-        while time.time() - start < driveDelay :
-			print("motorGO")
+	print("speed "+str(speed)+" dir "+str(dir1))
+	mult=self.driveMotorSpeedMultiplier.value
+	driveDelay=mult*32/800
+	waitDelay=(1-mult)*32/800
+	#~ print("Motor started at "+str(speed)+"; stopper is at "+str(self.stopEverything.value))
+	print(driveDelay,waitDelay)
+	if dir1 == 1:
+		print("motorback")
+		driveMotor.run(Adafruit_MotorHAT.BACKWARD)
+	elif dir1 == 2:
+		print("motorforward")
+		driveMotor.run(Adafruit_MotorHAT.FORWARD)
+	while True:
+		if self.stopEverything.value==1:
+			print("multgostopbreak")
+			break
+		driveMotor.setSpeed(speed)
+		#~ print("GO")
+		start = time.time()
+		#~ print(driveDelay, waitDelay)
+		while time.time() - start < driveDelay :
+			#~ print("motorGO")
 			QtGui.qApp.processEvents()
 			time.sleep(0.02)
-        driveMotor.setSpeed(0)
-        while time.time() - start < waitDelay :
-			print("motorSTOP")
-			QtGui.qApp.processEvents(
+		driveMotor.setSpeed(0)
+		#~ print("STOP")
+		while time.time() - start < waitDelay :
+			#~ print("motorSTOP")
+			QtGui.qApp.processEvents()
 			time.sleep(0.02)
 
 def droMoStop():
@@ -222,6 +238,7 @@ def droMoStop():
 
 def moStop():
     print("motors stop")
+    #~ self.stopEverything.value=1
     turnOffMotors()
 
 def moGoR2R(self,speed,dir1,dir2):
