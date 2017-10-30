@@ -150,6 +150,7 @@ class ExampleApp(QtGui.QMainWindow, For_Reel_v1_ui.Ui_MainWindow):
                 QtGui.qApp.processEvents()
                 time.sleep(0.02)
 
+    #I think that this might be necessary for the two motors.
     def moGoMult(self,speed,mult,dir1,dir2):
         while True:
             if self.stopEverything.value==1:
@@ -157,10 +158,11 @@ class ExampleApp(QtGui.QMainWindow, For_Reel_v1_ui.Ui_MainWindow):
 
 
     def testGo(self):
+        # Set the auto stop value to zero
         self.stopEverything.value=0
+        # Call the moGo command to start the motor at the current speed
         moGo(self,self.driveMotorSpeed.value,2,2)
-        # Here is where to start the child process for motor control.
-
+        #Update the countdown clock with the correct value.        
         self.countDownDisplay(self.TxtTime.value,self.TxtTimeDisplay)
 
     def testStop(self):
@@ -186,9 +188,7 @@ class ExampleApp(QtGui.QMainWindow, For_Reel_v1_ui.Ui_MainWindow):
 # Think about whether or not we need to specify motor mode in the moGo call
 
 def moGo(self,speed,dir1,dir2):
-    #print("motors start")
-    #print("drive speed="+str(speed))
-    #print("multiplier="+str(self.driveMotorSpeedMultiplier.value))
+    #Here is where to change the motor directions.
     if dir1 == "1":
     	driveMotor.run(Adafruit_MotorHAT.BACKWARD)
     elif dir1 == "2":
@@ -205,16 +205,16 @@ def moGoMultOutside(self,speed,dir1,dir2):
 	driveDelay=mult*64/800
 	waitDelay=(1-mult)*64/800
 	#~ print("Motor started at "+str(speed)+"; stopper is at "+str(self.stopEverything.value))
-	print(driveDelay,waitDelay)
+	#print(driveDelay,waitDelay)
 	if dir1 == 1:
-		print("motorback")
+		#print("motorback")
 		driveMotor.run(Adafruit_MotorHAT.BACKWARD)
 	elif dir1 == 2:
-		print("motorforward")
+		#print("motorforward")
 		driveMotor.run(Adafruit_MotorHAT.FORWARD)
 	while True:
 		if self.stopEverything.value==1:
-			print("multgostopbreak")
+			#print("multgostopbreak")
 			break
 		driveMotor.setSpeed(speed)
 		#~ print("GO")
@@ -267,8 +267,8 @@ slaveMotor=mh.getMotor(4)
 
 # recommended for auto-disabling motors on shutdown!
 def turnOffMotors():
-    mh.getMotor(3).run(Adafruit_MotorHAT.RELEASE)
     mh.getMotor(4).run(Adafruit_MotorHAT.RELEASE)
+    mh.getMotor(3).run(Adafruit_MotorHAT.RELEASE)
 
 
 #BoilerPlateQtGui.qApp.processEvents()QtGui.qApp.processEvents()
