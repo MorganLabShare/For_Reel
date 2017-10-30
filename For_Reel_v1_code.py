@@ -202,8 +202,8 @@ def moGo(self,speed,dir1,dir2):
 def moGoMultOutside(self,speed,dir1,dir2):
 	print("speed "+str(speed)+" dir "+str(dir1))
 	mult=self.driveMotorSpeedMultiplier.value
-	driveDelay=mult*32/800
-	waitDelay=(1-mult)*32/800
+	driveDelay=mult*64/800
+	waitDelay=(1-mult)*64/800
 	#~ print("Motor started at "+str(speed)+"; stopper is at "+str(self.stopEverything.value))
 	print(driveDelay,waitDelay)
 	if dir1 == 1:
