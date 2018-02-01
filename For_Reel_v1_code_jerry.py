@@ -223,8 +223,8 @@ GPIO.setup(16, GPIO.IN, pull_up_down = GPIO.PUD_UP)
 GPIO.setup(13, GPIO.IN, pull_up_down = GPIO.PUD_UP)
 # Low level motor setup
 mh = Adafruit_MotorHAT(addr=0x60)
-driveMotor=mh.getMotor(3)
-slaveMotor=mh.getMotor(4)
+driveMotor=mh.getMotor(4)
+slaveMotor=mh.getMotor(3)
 print("motors initiated")
 
 # recommended for auto-disabling motors on shutdown!

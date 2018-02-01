@@ -190,15 +190,15 @@ class ExampleApp(QtGui.QMainWindow, For_Reel_v1_ui.Ui_MainWindow):
 def moGo(self,speed,dir1,dir2):
     #Here is where to change the motor directions.
     if dir1 == "1":
-    	driveMotor.run(Adafruit_MotorHAT.FORWARD)
-    elif dir1 == "2":
     	driveMotor.run(Adafruit_MotorHAT.BACKWARD)
+    elif dir1 == "2":
+    	driveMotor.run(Adafruit_MotorHAT.FORWARD)
     print("starting motor diag")
     driveMotor.setSpeed(speed)
     #~ moGoMultOutsideProc=Process(target=moGoMultOutside,args=(self,speed,dir1,dir2))
     moGoMultOutside(self,speed,dir1,dir2)
-    #slaveMotor.setSpeed(speed)
-    #slaveProcFun(self,speed,dir2)
+    slaveMotor.setSpeed(speed)
+    slaveProcFun(self,speed,dir2)
     #slaveDriver(self,dir2)
 
 def moGoMultOutside(self,speed,dir1,dir2):
@@ -211,10 +211,10 @@ def moGoMultOutside(self,speed,dir1,dir2):
 	#print(driveDelay,waitDelay)
 	if dir1 == 1:
 		#print("motorback")
-		driveMotor.run(Adafruit_MotorHAT.FORWARD)
+		driveMotor.run(Adafruit_MotorHAT.BACKWARD)
 	elif dir1 == 2:
 		#print("motorforward")
-		driveMotor.run(Adafruit_MotorHAT.BACKWARD)
+		driveMotor.run(Adafruit_MotorHAT.FORWARD)
 	while True:
 		if self.stopEverything.value==1:
 			#print("multgostopbreak")
@@ -262,9 +262,9 @@ def slaveProcFun(self,speed,dir2):
 	driveDelay=mult*64/1600
 	waitDelay=(1-mult)*64/1600
 	if dir2 == 1:
-		slaveMotor.run(Adafruit_MotorHAT.FORWARD)
-	elif dir2 == 2:
 		slaveMotor.run(Adafruit_MotorHAT.BACKWARD)
+	elif dir2 == 2:
+		slaveMotor.run(Adafruit_MotorHAT.FORWARD)
 	while True:
 		print("this is the actual slave loop")
 		print("pin 19 = "+str(GPIO.input(19)))
